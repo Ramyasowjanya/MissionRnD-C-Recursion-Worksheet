@@ -34,9 +34,50 @@ more parameters .
 */
 
 #include<stdlib.h>
-
+void path_check(int *maze, int rows, int columns, int x1, int y1, int x2, int y2, int *result, int *max)
+{
+	(*max)--;
+	if ((*result) == 0 && (*max) >= 0)
+	{
+		if (x1 == x2 &&y1 == y2)
+		{
+			*result = 1;
+		}
+		else
+		{
+			if (x1 - 1 >= 0 && *(*(&maze) + (x1 - 1)*columns + y1) != 0 && (*max) >= 0)
+			{
+				*(*(&maze) + (x1 - 1)*columns + y1) = 0;
+				path_check(maze, rows, columns, x1 - 1, y1, x2, y2, result, max);
+			}
+			if (y1 - 1 >= 0 && *(*(&maze) + (x1)*columns + y1 - 1) != 0 && (*max) >= 0)
+			{
+				*(*(&maze) + (x1)*columns + y1 - 1) = 0;
+				path_check(maze, rows, columns, x1, y1 - 1, x2, y2, result, max);
+			}
+			if (y1 + 1 < columns&&*(*(&maze) + (x1)*columns + (y1 + 1)) != 0 && (*max) >= 0)
+			{
+				*(*(&maze) + (x1)*columns + (y1 + 1)) = 0;
+				path_check(maze, rows, columns, x1, y1 + 1, x2, y2, result, max);
+			}
+			if (x1 + 1 < rows&& *(*(&maze) + (x1 + 1)*columns + y1) != 0 && (*max) >= 0)
+			{
+				*(*(&maze) + (x1 + 1)*columns + y1) = 0;
+				path_check(maze, rows, columns, x1 + 1, y1, x2, y2, result, max);
+			}
+		}
+	}
+}
 
 int path_exists(int *maze, int rows, int columns, int x1, int y1, int x2, int y2)
 {
-	return 1;
+	int res = 0, temp = rows*columns;
+	if (x1 >= 0 && x2 >= 0 && x2 >= 0 && y2 >= 0 && x1 < rows&&y1 < columns&&x2 < rows&&y2 < columns)
+	{
+		if (*(*(&maze) + (x1)*columns + y1) == 0 || *(*(&maze) + (x2)*columns + y2) == 0)
+			return 0;
+		path_check(maze, rows, columns, x1, y1, x2, y2, &res, &temp);
+		return res;
+	}
+	return 0;
 }
